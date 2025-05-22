@@ -1,0 +1,77 @@
+<PROJECT_TREE>
+- .deepsource.toml
+- AUTHORS.md
+- CHANGES.md
+- CODE_OF_CONDUCT.md
+- CONTRIBUTING.md
+- Dockerfile
+- ISSUE_TEMPLATE.md
+- LICENSE
+- MANIFEST.in
+- Makefile
+- PULL_REQUEST_TEMPLATE.md
+- README.md
+- UPGRADE.md
+- VERSIONS.md
+- advanced-examples/
+- docs/
+- examples/
+- tests/
+- twilio/
+- index.rst
+- requirements.txt
+- advanced-examples
+- docs
+- docs/source
+- examples
+- tests
+- tests/cluster
+- tests/unit
+- twilio
+- twilio/auth_strategy
+- twilio/base
+- twilio/credential
+- twilio/http
+- twilio/jwt
+- twilio/rest
+- twilio/twiml
+- setup.cfg
+- setup.py
+- sonar-project.properties
+- tox.ini
+
+<LANGUAGE_DETECTED>
+Python 3 (library and scripts)
+
+<DEPENDENCY_FILES>
+- requirements.txt
+- tests/requirements.txt
+- setup.py
+- setup.cfg
+- tox.ini
+
+<BUILD_RUN_SCRIPTS>
+- Dockerfile (Python 3.7, installs package and test requirements)
+- Makefile (venv creation, install, develop, docker-build, docker-push, test targets)
+
+<README_INSTALL>
+From README.md:
+ pip3 install twilio
+ curl https://bootstrap.pypa.io/get-pip.py | python
+ python3 setup.py install
+
+<ENV_VARS>
+ASSISTANT_ID
+CLIENT_SECRET
+ORGS_SID
+TWILIO_ACCOUNT_SID
+TWILIO_API_KEY
+TWILIO_API_SECRET
+TWILIO_AUTH_TOKEN
+TWILIO_CLIENT_ID
+TWILIO_FROM_NUMBER
+TWILIO_TO_NUMBER
+PYTHONUNBUFFERED (Dockerfile)
+
+<PORTS_SERVICES>
+(no explicit ports found)
