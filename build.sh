@@ -3,20 +3,27 @@
 cd /app
 set -e
 
-# COMPLETE THE FOLLOWING SECTIONS
 ###############################################
 # PROJECT DEPENDENCIES AND CONFIGURATION
 ###############################################
-# TODO: Install project dependencies if needed based on relevant config/lock files in the repo.
-# Note that we are developing the project, even if dependencies have been installed before, we need to install again to accommodate the changes we made.
-# <dependency-installation-commands>
-# TODO: Configure project and environment variables
-# <config-commands>
+# Install project dependencies
+pip install --no-cache-dir -r app/requirements.txt
+pip install --no-cache-dir -r app/tests/requirements.txt
+pip install --no-cache-dir ./app
+
+# Configure environment variables (dummy values for tests)
+export TWILIO_ACCOUNT_SID="ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+export TWILIO_AUTH_TOKEN="your_auth_token"
+export TWILIO_API_KEY="apikey"
+export TWILIO_API_SECRET="apisecret"
+export TWILIO_FROM_NUMBER="+15005550006"
+export TWILIO_TO_NUMBER="+15005550006"
+export ASSISTANT_ID="ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 ###############################################
 # BUILD
 ###############################################
 echo "================= 0909 BUILD START 0909 ================="
-# TODO: Build the project if needed. Note that we are developing the project and making changes to it, even if it has been build before, we need to build it again.
-# <build-commands>
+# No additional build steps required
+
 echo "================= 0909 BUILD END 0909 ================="
