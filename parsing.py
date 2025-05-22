@@ -26,6 +26,7 @@ import sys
 from enum import Enum
 from pathlib import Path
 from typing import List
+import re
 
 
 class TestStatus(Enum):
@@ -64,7 +65,68 @@ def parse_test_output(stdout_content: str, stderr_content: str) -> List[TestResu
         - Use regular expressions or string parsing to extract test results
         - Create TestResult objects for each test found
     """
-    raise NotImplementedError('Implement the test output parsing logic')
+
+    results: List[TestResult] = []
+
+    # Combine stdout and stderr lines for easier processing of common patterns.
+    all_lines = stdout_content.splitlines() + stderr_content.splitlines()
+
+    current_file = None
+
+    for line in all_lines:
+        line = line.rstrip()
+        if not line:
+            continue
+
+        # JEST style: "PASS path/to/testfile.test.ts (0.123 s)"
+        m = re.match(r"^(PASS|FAIL|SKIP|SKIPPED?)\s+(\S+)", line)
+        if m:
+            current_file = m.group(2)
+            continue
+
+        # JEST individual test cases (passed)
+        m = re.match(r"^\s*[\u2713\u2714✓✔]\s+(.*?)(?:\s+\([0-9\.]+\s*(?:ms|s)\))?\s*$", line)
+        if m and current_file:
+            test_name = m.group(1).strip()
+            results.append(TestResult(f"{current_file}::{test_name}", TestStatus.PASSED))
+            continue
+
+        # JEST individual test cases (failed)
+        m = re.match(r"^\s*[✕x×✖]\s+(.*?)(?:\s+\([0-9\.]+\s*(?:ms|s)\))?\s*$", line)
+        if m and current_file:
+            test_name = m.group(1).strip()
+            results.append(TestResult(f"{current_file}::{test_name}", TestStatus.FAILED))
+            continue
+
+        # JEST skipped tests
+        m = re.match(r"^\s*(?:○|◌|-|\*)\s+(.*)", line)
+        if m and current_file:
+            test_name = m.group(1).strip()
+            results.append(TestResult(f"{current_file}::{test_name}", TestStatus.SKIPPED))
+            continue
+
+        # Pytest style output: path/to/test_file.py::test_name STATUS
+        m = re.match(r"^(\S+\.py)::(\S+)\s+(PASSED|FAILED|SKIPPED|ERROR|XPASS|XFAIL)", line)
+        if m:
+            file_path, test_name, status_word = m.groups()
+            if status_word in {"PASSED", "XPASS"}:
+                status = TestStatus.PASSED
+            elif status_word == "FAILED":
+                status = TestStatus.FAILED
+            elif status_word in {"SKIPPED", "XFAIL"}:
+                status = TestStatus.SKIPPED
+            else:
+                status = TestStatus.ERROR
+            results.append(TestResult(f"{file_path}::{test_name}", status))
+            continue
+
+        # Some error lines may include "ERROR" with the same format in stderr
+        m = re.match(r"^(\S+\.py)::(\S+)\s+ERROR", line)
+        if m:
+            file_path, test_name = m.groups()
+            results.append(TestResult(f"{file_path}::{test_name}", TestStatus.ERROR))
+
+    return results
 
 
 ### Implement the parsing logic above ###
